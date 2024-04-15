@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tax Calculator</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .container {
+            border: 2px solid #ccc;
+            padding: 40px;
+            width: 400px;
+            text-align: center;
+        }
+
+        .label-input {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+            position: relative;
+        }
+
+        .label-input label {
+            /* flex: 1; */
+            text-align: left;
+        }
+
+        .label-input input[type='number'] {
+            flex: 1;
+            width: 100%;
+            /* padding-right: 24px; */
+            padding-top: 3px;
+            padding-bottom: 3px;
+        }
+
+        .error-icon {
+            display: none;
+            /* cursor: help; */
+        }
+
+        .error-message {
+            display: none;
+            color: red;
+        }
+
+        .error-icon:hover + .error-message {
+            display: inline;
+        }
+
+        .error-icon.active {
+            display: inline;
+        }
+
+        .info-icon {
+            cursor: help;
+        }
+
+        .info-tooltip {
+            display: none;
+            position: absolute;
+            background-color: #f9f9f9;
+            border: 1px solid #ccc;
+            padding: 10px;
+            z-index: 1;
+            top: calc(100% + 5px);
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        .info-icon:hover + .info-tooltip {
+            display: block;
+        }
+
+        /* Modal styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.4);
+        }
+
+        .modal-content {
+            background-color: #fefefe;
+            margin: 15% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+        }
+
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        .close:hover,
+        .close:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+        #ageGroup{
+            margin-left: 65px;
+        }
+        #deductions{
+            margin-left: 28px;
+        }
+        #extraIncome{
+            margin-left: 50px;
+        }
+        #annualIncome{
+            margin-left: 40px;
+        }
+
+    </style>
+</head>
+<body>
+    <div class="container">
+        <form id="taxForm">
+            <div class="label-input">
+                <label for="annualIncome">Annual Income:</label>
+                <button class="info-icon">?</button>
+                <div class="info-tooltip">
+                    Enter your annual income <br> including any additional <br> income sources.
+                </div>
+                <input placeholder="Enter your Annual Income" type="number" id="annualIncome" name="annualIncome">
+                <button class="error-icon">!</button>
+                <span class="error-message" id="annualIncomeError">Please enter a valid number.</span>
+            </div>
+            
+            <div class="label-input">
+                <label for="extraIncome">Extra Income:</label>
+                <button class="info-icon">?</button>
+                <div class="info-tooltip">
+                    Enter any extra income <br> you receive apart from <br> your annual income.
+                </div>
+                <input placeholder="Enter your Extra Income" type="number" id="extraIncome" name="extraIncome">
+                <button class="error-icon">!</button>
+                <span class="error-message" id="extraIncomeError">Please enter a valid number.</span>
+            </div>
+            
+            <div class="label-input">
+                <label for="ageGroup">Age Group:</label>
+                <button class="info-icon">?</button>
+                <div class="info-tooltip">
+                    Enter your age range.
+                </div>
+                <input placeholder=" Enter your age range." type="number" id="ageGroup" name="ageGroup" min="0">
+                <button class="error-icon">!</button>
+                <span class="error-message" id="ageGroupError">Please enter a valid age.</span>
+            </div>
+            
+            <div class="label-input">
+                <label for="deductions">Total Deductions:</label>
+                <button class="info-icon">?</button>
+                <div class="info-tooltip">
+                    Enter the total amount <br> of deductions you <br> can claim.
+                </div>
+                
+                <input placeholder="Total Deductions" type="number" id="deductions" name="deductions">
+                <button class="error-icon">!</button>
+                <span class="error-message" id="deductionsError">Please enter a valid number.</span>
+            </div>
+            
+            <button type="submit" >Submit</button>
+        </form>
+    </div>
+
+    <!-- Modal -->
+    <div id="myModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <p id="incomeResult"></p>
+            <p id="taxResult"></p>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById("taxForm").addEventListener("submit", function(event) {
+            event.preventDefault();
+            const annualIncome = parseFloat(document.getElementById("annualIncome").value);
+            const extraIncome = parseFloat(document.getElementById("extraIncome").value);
+            const ageGroup = parseInt(document.getElementById("ageGroup").value);
+            const deductions = parseFloat(document.getElementById("deductions").value);
+
+            if (isNaN(annualIncome) || isNaN(extraIncome) || isNaN(ageGroup) || isNaN(deductions)) {
+                alert("Please enter valid numbers.");
+                return;
+            }
+
+            let taxRate;
+            if (ageGroup < 40) {
+                taxRate = 0.3;
+            } else if (ageGroup >= 40 && ageGroup < 60) {
+                taxRate = 0.4;
+            } else if (ageGroup >= 60) {
+                taxRate = 0.1;
+            } else {
+                alert("Please enter a valid age.");
+                return;
+            }
+
+            const totalIncome = annualIncome + extraIncome - deductions;
+            let tax = 0;
+            if (totalIncome > 800000) {
+                tax = taxRate * (totalIncome - 800000);
+            }
+
+            document.getElementById("incomeResult").innerText = `Total Income: ${totalIncome.toFixed(2)} Lakhs`;
+            document.getElementById("taxResult").innerText = `Tax: ${tax.toFixed(2)} Lakhs`;
+            document.getElementById("myModal").style.display = "block";
+        });
+
+        document.getElementsByClassName("close")[0].addEventListener("click", function() {
+            document.getElementById("myModal").style.display = "none";
+        });
+
+        window.addEventListener("click", function(event) {
+            if (event.target === document.getElementById("myModal")) {
+                document.getElementById("myModal").style.display = "none";
+            }
+        });
+
+        const inputs = document.querySelectorAll("input[type='number']");
+        inputs.forEach(input => {
+            input.addEventListener("input", function() {
+                const errorIcon = this.nextElementSibling;
+                const errorMessage = errorIcon.nextElementSibling;
+                if (isNaN(parseFloat(this.value))) {
+                    errorIcon.classList.add("active");
+                } else {
+                    errorIcon.classList.remove("active");
+                    if (!errorMessage.classList.contains("error-icon")) {
+                        errorMessage.style.display = "none";
+                    }
+                }
+            });
+
+            input.addEventListener("mouseover", function() {
+                const errorIcon = this.nextElementSibling;
+                const errorMessage = errorIcon.nextElementSibling;
+                if (errorIcon.classList.contains("active")) {
+                    errorMessage.classList.add("error-icon");
+                }
+            });
+
+            input.addEventListener("mouseout", function() {
+                const errorIcon = this.nextElementSibling;
+                const errorMessage = errorIcon.nextElementSibling;
+                if (errorIcon.classList.contains("active")) {
+                    errorMessage.classList.remove("error-icon");
+                }
+            });
+        });
+
+        
+
+        
+    </script>
+</body>
+</html>
