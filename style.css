@@ -1,0 +1,120 @@
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+}
+
+.container {
+    border: 2px solid #ccc;
+    padding: 40px;
+    width: 400px;
+    text-align: center;
+}
+
+.label-input {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+    position: relative;
+}
+
+.label-input label {
+    /* flex: 1; */
+    text-align: left;
+}
+
+.label-input input[type='number'] {
+    flex: 1;
+    width: 100%;
+    /* padding-right: 24px; */
+    padding-top: 3px;
+    padding-bottom: 3px;
+}
+
+.error-icon {
+    display: none;
+    /* cursor: help; */
+}
+
+.error-message {
+    display: none;
+    color: red;
+}
+
+.error-icon:hover + .error-message {
+    display: inline;
+}
+
+.error-icon.active {
+    display: inline;
+}
+
+.info-icon {
+    cursor: help;
+}
+
+.info-tooltip {
+    display: none;
+    position: absolute;
+    background-color: #f9f9f9;
+    border: 1px solid #ccc;
+    padding: 10px;
+    z-index: 1;
+    top: calc(100% + 5px);
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+.info-icon:hover + .info-tooltip {
+    display: block;
+}
+
+/* Modal styles */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0,0,0,0.4);
+}
+
+.modal-content {
+    background-color: #fefefe;
+    margin: 15% auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%;
+}
+
+.close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+}
+#ageGroup{
+    margin-left: 65px;
+}
+#deductions{
+    margin-left: 28px;
+}
+#extraIncome{
+    margin-left: 50px;
+}
+#annualIncome{
+    margin-left: 40px;
+}
